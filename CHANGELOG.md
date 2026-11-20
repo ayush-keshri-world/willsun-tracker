@@ -7,3 +7,4 @@
 - Added per-party order entry and sales history.
 - Added admin MR management, filtering, summary reporting, and CSV exports.
 - Added hourly photo cleanup plus local setup and cPanel deployment guides.
+- Hardened session deactivation, GPS validation, party activation, and CSV exports.

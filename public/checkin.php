@@ -10,7 +10,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf(); $latitude = filter_var($_POST['latitude'] ?? null, FILTER_VALIDATE_FLOAT); $longitude = filter_var($_POST['longitude'] ?? null, FILTER_VALIDATE_FLOAT);
     $status = $_POST['status'] ?? ''; $remark = trim($_POST['remark'] ?? ''); $upload = $_FILES['photo'] ?? null;
-    if ($latitude === false || $longitude === false || !in_array($status, ['converted','not_converted'], true) || strlen($remark) > 500) { $error = 'GPS, status, and a short remark are required in the expected format.'; }
+    if ($latitude === false || $longitude === false || $latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180 || !in_array($status, ['converted','not_converted'], true) || strlen($remark) > 500) { $error = 'GPS, status, and a short remark are required in the expected format.'; }
     elseif (!$upload || $upload['error'] !== UPLOAD_ERR_OK || $upload['size'] > 5 * 1024 * 1024) { $error = 'Take a JPEG or PNG photo smaller than 5 MB.'; }
     else {
         $mime = (new finfo(FILEINFO_MIME_TYPE))->file($upload['tmp_name']);
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $distance = null; $tag = 'first';
                 if ($party['latitude'] !== null && $party['longitude'] !== null) {
                     $earth = 6371000; $lat1 = deg2rad((float)$party['latitude']); $lat2 = deg2rad((float)$latitude); $dLat = $lat2-$lat1; $dLng = deg2rad((float)$longitude-deg2rad((float)$party['longitude']));
-                    $a = sin($dLat/2) ** 2 + cos($lat1) * cos($lat2) * sin($dLng/2) ** 2; $distance = $earth * 2 * atan2(sqrt($a), sqrt(1-$a)); $tag = $distance <= 200 ? 'near' : 'far';
+                    $a = sin($dLat/2) ** 2 + cos($lat1) * cos($lat2) * sin($dLng/2) ** 2; $a = min(1, max(0, $a)); $distance = $earth * 2 * atan2(sqrt($a), sqrt(1-$a)); $tag = $distance <= 200 ? 'near' : 'far';
                 }
                 $pdo = db(); $pdo->beginTransaction();
                 try {

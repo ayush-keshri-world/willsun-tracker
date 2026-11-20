@@ -62,11 +62,21 @@ function visit_day_options(): array
     return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 }
 
+/** Prevent spreadsheet formula execution when opening an exported CSV. */
+function csv_safe(mixed $value): string
+{
+    $text = (string) $value;
+    if ($text !== '' && in_array($text[0], ['=', '+', '-', '@'], true)) {
+        $text = "'" . $text;
+    }
+    return $text;
+}
+
 function party_for_user(int $partyId, array $user): ?array
 {
     $sql = 'SELECT p.*, u.name AS mr_name FROM parties p LEFT JOIN users u ON u.id = p.mr_id WHERE p.id = ?';
     if ($user['role'] !== 'admin') {
-        $sql .= ' AND p.mr_id = ' . (int) $user['id'];
+        $sql .= ' AND p.mr_id = ' . (int) $user['id'] . ' AND p.active = 1';
     }
     $stmt = db()->prepare($sql);
     $stmt->execute([$partyId]);

@@ -30,7 +30,9 @@ function csrf_token(): string
 function verify_csrf(): void
 {
     start_session();
-    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+    $submittedToken = $_POST['csrf_token'] ?? '';
+    if (!is_string($submittedToken)
+        || !hash_equals((string) ($_SESSION['csrf_token'] ?? ''), $submittedToken)) {
         http_response_code(403);
         exit('Invalid form token. Please go back and try again.');
     }
@@ -44,12 +46,26 @@ function current_user(): ?array
 
 function require_login(): array
 {
+    $loginPath = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '../index.php' : 'index.php';
     $user = current_user();
     if ($user === null) {
-        header('Location: index.php');
+        header('Location: ' . $loginPath);
         exit;
     }
-    return $user;
+    $statement = db()->prepare('SELECT id, name, role, active FROM users WHERE id = ? LIMIT 1');
+    $statement->execute([(int) $user['id']]);
+    $current = $statement->fetch();
+    if (!$current || !(int) $current['active']) {
+        logout_user();
+        header('Location: ' . $loginPath);
+        exit;
+    }
+    $_SESSION['user'] = [
+        'id' => (int) $current['id'],
+        'name' => $current['name'],
+        'role' => $current['role'],
+    ];
+    return $_SESSION['user'];
 }
 
 function require_admin(): array
