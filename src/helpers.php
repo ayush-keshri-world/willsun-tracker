@@ -28,9 +28,10 @@ function redirect(string $path): never
 function page_start(string $title, ?array $user = null): void
 {
     $user ??= current_user();
+    $assetPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '../' : '';
     echo '<!doctype html><html lang="en"><head><meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-    echo '<title>' . e($title) . '</title><link rel="stylesheet" href="assets/style.css">';
+    echo '<title>' . e($title) . '</title><link rel="stylesheet" href="' . $assetPrefix . 'assets/style.css">';
     echo '</head><body><main class="page"><header><h1>' . e($title) . '</h1>';
     if ($user) {
         echo '<p class="muted">Signed in as ' . e($user['name']) . '</p>';
@@ -41,12 +42,22 @@ function page_start(string $title, ?array $user = null): void
 function page_end(?array $user = null, string $active = ''): void
 {
     $user ??= current_user();
+    if ($user && $user['role'] === 'admin') {
+        echo '<nav class="top-nav"><a href="index.php">MRs</a><a href="parties.php">Parties</a>'
+            . '<a href="visits.php">Visits</a><a href="summary.php">Summary</a>'
+            . '<a href="../logout.php">Logout</a></nav>';
+    }
     if ($user && $user['role'] === 'employee') {
         echo '<nav class="bottom-nav"><a class="' . ($active === 'today' ? 'active' : '')
             . '" href="today.php">Today</a><a class="' . ($active === 'parties' ? 'active' : '')
             . '" href="parties.php">Parties</a><a href="logout.php">Logout</a></nav>';
     }
     echo '</main></body></html>';
+}
+
+function visit_day_options(): array
+{
+    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 }
 
 function party_for_user(int $partyId, array $user): ?array
