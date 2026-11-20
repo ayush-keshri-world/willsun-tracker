@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-page_start('Check-in: '.$party['name'], $user);
+page_start('Check-in: '.$party['name'], $user, 'parties');
 ?>
 <p class="notice">Your location and photo are captured at check-in.</p><form id="checkin-form" method="post" enctype="multipart/form-data" class="card"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>"><input type="hidden" name="party_id" value="<?= $partyId ?>"><input id="latitude" name="latitude" type="hidden"><input id="longitude" name="longitude" type="hidden">
 <?php if ($error): ?><p class="error"><?= e($error) ?></p><?php endif; ?><label>Camera photo<input id="photo" name="photo" type="file" accept="image/*" capture="environment" required></label><p id="location-message" class="muted">Requesting GPS location…</p><label>Status<select name="status" required><option value="converted">Converted</option><option value="not_converted">Not converted</option></select></label><label>Remark (optional)<textarea name="remark" maxlength="500"></textarea></label><p id="upload-message" class="muted" hidden>Resizing and uploading photo…</p><button id="save-button" type="submit" disabled>Save check-in</button></form><script src="assets/app.js"></script>

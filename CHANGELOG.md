@@ -9,3 +9,4 @@
 - Added hourly photo cleanup plus local setup and cPanel deployment guides.
 - Hardened session deactivation, GPS validation, party activation, and CSV exports.
 - Fixed GPS longitude distance calculation for Near and Far visit tags.
+- Added employee registration, safe password recovery guidance, password changes, and top navigation.

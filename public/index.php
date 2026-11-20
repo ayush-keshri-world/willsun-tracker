@@ -29,5 +29,6 @@ page_start('MR Visit Tracker', null);
   <label>Mobile number<input name="mobile" type="tel" inputmode="numeric" pattern="[0-9]{10}" required></label>
   <label>Password<input name="password" type="password" required></label>
   <button type="submit">Log in</button>
+  <p class="center-links"><a href="register.php">New registration</a> · <a href="forgot_password.php">Forgot password?</a></p>
 </form>
 <?php page_end(null); ?>

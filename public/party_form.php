@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $mrs = $user['role'] === 'admin' ? db()->query("SELECT id,name FROM users WHERE role='employee' AND active=1 ORDER BY name")->fetchAll() : [];
 $party ??= ['type'=>'doctor','name'=>'','designation'=>'','clinic_name'=>'','area'=>'','pincode'=>'','mobile'=>'','visit_day'=>'Monday','mr_id'=>$user['id']];
-page_start($partyId ? 'Edit party' : 'Add party', $user);
+page_start($partyId ? 'Edit party' : 'Add party', $user, 'parties');
 ?>
 <form method="post" class="card"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
 <?php if ($error): ?><p class="error"><?= e($error) ?></p><?php endif; ?>

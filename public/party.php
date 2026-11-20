@@ -6,7 +6,7 @@ if (!$party) { http_response_code(404); exit('Party not found.'); }
 $visitStmt = db()->prepare('SELECT * FROM visits WHERE party_id=? ORDER BY visited_at DESC'); $visitStmt->execute([$partyId]); $visits=$visitStmt->fetchAll();
 $orderStmt = db()->prepare('SELECT * FROM orders WHERE party_id=? ORDER BY order_date DESC, id DESC'); $orderStmt->execute([$partyId]); $orders=$orderStmt->fetchAll();
 $totalSales = array_sum(array_map(static fn(array $order): float => (float) $order['amount'], $orders));
-page_start($party['name'], $user);
+page_start($party['name'], $user, 'parties');
 ?>
 <section class="card"><p><strong><?= e(ucfirst($party['type'])) ?></strong> · <?= e($party['area']) ?></p><p><?= e($party['designation']) ?><?= $party['clinic_name'] ? ' · '.e($party['clinic_name']) : '' ?></p><p><?= e($party['mobile']) ?> · <?= e($party['pincode']) ?></p><p>Total visits: <strong><?= count($visits) ?></strong><?= $visits ? ' · Last visit: '.e(date('d M Y', strtotime($visits[0]['visited_at']))) : '' ?></p></section>
 <?php if ($user['role']==='employee'): ?><a class="button" href="checkin.php?party_id=<?= $partyId ?>">Check-in</a><a class="button secondary" href="order_form.php?party_id=<?= $partyId ?>">Add order</a><?php endif; ?><a class="edit-link" href="party_form.php?id=<?= $partyId ?>">Edit party</a>

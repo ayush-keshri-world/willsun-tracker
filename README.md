@@ -36,6 +36,8 @@ A small, mobile-first PHP 8.1+ and MySQL app for pharmaceutical MRs to manage as
 
 Camera and GPS access normally require HTTPS on a real phone; localhost is suitable for testing standard pages and forms. Test at a 360px-wide mobile viewport.
 
+Employees can register with their name, mobile number, and password. New accounts have no parties until an administrator assigns them. Users can change their own password after logging in; forgotten-password requests are handled by an admin from the MRs page because Version 1 intentionally has no email or OTP verification.
+
 ## Security notes
 
 - `config.php` and uploaded files are intentionally ignored by Git.
