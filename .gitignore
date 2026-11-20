@@ -1,0 +1,9 @@
+config.php
+.env
+storage/photos/*
+!storage/photos/.gitkeep
+*.sql.bak
+*.log
+.DS_Store
+.idea/
+.vscode/
