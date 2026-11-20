@@ -8,3 +8,4 @@
 - Added admin MR management, filtering, summary reporting, and CSV exports.
 - Added hourly photo cleanup plus local setup and cPanel deployment guides.
 - Hardened session deactivation, GPS validation, party activation, and CSV exports.
+- Fixed GPS longitude distance calculation for Near and Far visit tags.

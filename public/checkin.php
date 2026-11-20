@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             else {
                 $distance = null; $tag = 'first';
                 if ($party['latitude'] !== null && $party['longitude'] !== null) {
-                    $earth = 6371000; $lat1 = deg2rad((float)$party['latitude']); $lat2 = deg2rad((float)$latitude); $dLat = $lat2-$lat1; $dLng = deg2rad((float)$longitude-deg2rad((float)$party['longitude']));
+                    $earth = 6371000; $lat1 = deg2rad((float)$party['latitude']); $lat2 = deg2rad((float)$latitude); $dLat = $lat2-$lat1; $dLng = deg2rad((float)$longitude) - deg2rad((float)$party['longitude']);
                     $a = sin($dLat/2) ** 2 + cos($lat1) * cos($lat2) * sin($dLng/2) ** 2; $a = min(1, max(0, $a)); $distance = $earth * 2 * atan2(sqrt($a), sqrt(1-$a)); $tag = $distance <= 200 ? 'near' : 'far';
                 }
                 $pdo = db(); $pdo->beginTransaction();
