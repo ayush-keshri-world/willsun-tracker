@@ -5,3 +5,4 @@
 - Added today’s visit list and party visit/order histories.
 - Added GPS and camera check-ins with protected, expiring photos.
 - Added per-party order entry and sales history.
+- Added admin MR management, filtering, summary reporting, and CSV exports.

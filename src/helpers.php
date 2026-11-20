@@ -43,9 +43,11 @@ function page_end(?array $user = null, string $active = ''): void
 {
     $user ??= current_user();
     if ($user && $user['role'] === 'admin') {
-        echo '<nav class="top-nav"><a href="index.php">MRs</a><a href="parties.php">Parties</a>'
-            . '<a href="visits.php">Visits</a><a href="summary.php">Summary</a>'
-            . '<a href="../logout.php">Logout</a></nav>';
+        $adminPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '' : 'admin/';
+        $logoutPath = $adminPrefix === '' ? '../logout.php' : 'logout.php';
+        echo '<nav class="top-nav"><a href="' . $adminPrefix . 'index.php">MRs</a><a href="' . $adminPrefix . 'parties.php">Parties</a>'
+            . '<a href="' . $adminPrefix . 'visits.php">Visits</a><a href="' . $adminPrefix . 'summary.php">Summary</a>'
+            . '<a href="' . $logoutPath . '">Logout</a></nav>';
     }
     if ($user && $user['role'] === 'employee') {
         echo '<nav class="bottom-nav"><a class="' . ($active === 'today' ? 'active' : '')
