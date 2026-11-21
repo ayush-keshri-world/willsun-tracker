@@ -71,9 +71,19 @@ function require_login(): array
 function require_admin(): array
 {
     $user = require_login();
-    if ($user['role'] !== 'admin') {
+    if (!in_array($user['role'], ['owner', 'admin'], true)) {
         http_response_code(403);
-        exit('Admins only.');
+        exit('Owner or admin access required.');
+    }
+    return $user;
+}
+
+function require_owner(): array
+{
+    $user = require_login();
+    if ($user['role'] !== 'owner') {
+        http_response_code(403);
+        exit('Owner access required.');
     }
     return $user;
 }

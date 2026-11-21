@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/src/helpers.php';
 
 start_session();
 if (current_user()) {
-    redirect(current_user()['role'] === 'admin' ? 'admin/index.php' : 'today.php');
+    redirect(current_user()['role'] === 'owner' ? 'owner/index.php' : (current_user()['role'] === 'admin' ? 'admin/index.php' : 'today.php'));
 }
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
     if ($user && password_verify($password, $user['password_hash'])) {
         login($user);
-        redirect($user['role'] === 'admin' ? 'admin/index.php' : 'today.php');
+        redirect($user['role'] === 'owner' ? 'owner/index.php' : ($user['role'] === 'admin' ? 'admin/index.php' : 'today.php'));
     }
     $error = 'Invalid mobile number, password, or inactive account.';
 }

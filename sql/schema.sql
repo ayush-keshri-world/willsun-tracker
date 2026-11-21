@@ -3,7 +3,7 @@ CREATE TABLE users (
   name VARCHAR(100) NOT NULL,
   mobile CHAR(10) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('admin', 'employee') NOT NULL DEFAULT 'employee',
+  role ENUM('owner', 'admin', 'employee') NOT NULL DEFAULT 'employee',
   active TINYINT(1) NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -60,7 +60,7 @@ CREATE TABLE orders (
   CONSTRAINT fk_orders_mr FOREIGN KEY (mr_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Create the first admin after import. Generate the hash locally with:
+-- Create the first owner after import. Generate the hash locally with:
 -- php -r "echo password_hash('choose-a-strong-password', PASSWORD_DEFAULT), PHP_EOL;"
 -- INSERT INTO users (name, mobile, password_hash, role) VALUES
--- ('Administrator', '9999999999', 'PASTE_THE_GENERATED_HASH', 'admin');
+-- ('Owner name', '9999999999', 'PASTE_THE_GENERATED_HASH', 'owner');

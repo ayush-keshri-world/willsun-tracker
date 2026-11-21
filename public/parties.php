@@ -3,7 +3,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/src/helpers.php';
 $user = require_login(); $search = trim($_GET['search'] ?? '');
 $sql = 'SELECT p.*, EXISTS(SELECT 1 FROM visits v WHERE v.party_id=p.id AND DATE(v.visited_at)=CURDATE()) AS visited_today FROM parties p WHERE p.active=1'; $values=[];
-if ($user['role'] !== 'admin') { $sql.=' AND p.mr_id=?'; $values[]=$user['id']; }
+if ($user['role'] === 'employee') { $sql.=' AND p.mr_id=?'; $values[]=$user['id']; }
 if ($search !== '') { $sql.=' AND (p.name LIKE ? OR p.area LIKE ?)'; $values[]="%$search"; $values[]="%$search"; }
 $stmt=db()->prepare($sql.' ORDER BY p.name'); $stmt->execute($values); $parties=$stmt->fetchAll(); page_start('My parties',$user,'parties');
 ?>

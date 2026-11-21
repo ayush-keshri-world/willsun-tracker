@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/src/helpers.php';
 $user = require_login();
+if ($user['role'] === 'owner') { redirect('owner/index.php'); }
 if ($user['role'] === 'admin') { redirect('admin/index.php'); }
 $stmt = db()->prepare('SELECT p.*, EXISTS(SELECT 1 FROM visits v WHERE v.party_id=p.id AND DATE(v.visited_at)=CURDATE()) AS visited_today FROM parties p WHERE p.active=1 AND p.mr_id=? AND p.visit_day=DAYNAME(CURDATE()) ORDER BY p.name');
 $stmt->execute([$user['id']]); $parties = $stmt->fetchAll(); page_start("Today's visits", $user, 'today');
