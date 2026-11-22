@@ -38,13 +38,14 @@ function page_start(string $title, ?array $user = null, string $active = ''): vo
         if ($user['role'] === 'owner') {
             $ownerPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/owner/') ? '' : 'owner/';
             $ownerLogoutPath = $ownerPrefix === '' ? '../logout.php' : 'logout.php';
-            echo '<nav class="top-nav owner-nav"><a href="' . $ownerPrefix . 'index.php">Dashboard</a><a href="' . $ownerPrefix . 'mrs.php">MR details</a><a href="' . $ownerPrefix . 'admins.php">Admins</a><a href="' . $ownerLogoutPath . '">Logout</a></nav>';
+            $reportPath = $ownerPrefix === '' ? '../admin/report.php' : 'admin/report.php';
+            echo '<nav class="top-nav owner-nav"><a href="' . $ownerPrefix . 'index.php">Dashboard</a><a href="' . $reportPath . '">Reports</a><a href="' . $ownerPrefix . 'mrs.php">MR details</a><a href="' . $ownerPrefix . 'admins.php">Admins</a><a href="' . $ownerLogoutPath . '">Logout</a></nav>';
         }
         elseif ($user['role'] === 'admin') {
             $adminPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '' : 'admin/';
             $logoutPath = $adminPrefix === '' ? '../logout.php' : 'logout.php';
             echo '<nav class="top-nav"><a href="' . $adminPrefix . 'index.php">MRs</a><a href="' . $adminPrefix . 'parties.php">Parties</a>'
-                . '<a href="' . $adminPrefix . 'visits.php">Visits</a><a href="' . $adminPrefix . 'summary.php">Summary</a>'
+                . '<a href="' . $adminPrefix . 'visits.php">Visits</a><a href="' . $adminPrefix . 'report.php">Reports</a><a href="' . $adminPrefix . 'summary.php">Summary</a>'
                 . '<a href="' . $logoutPath . '">Logout</a></nav>';
         }
         elseif ($user['role'] === 'employee') {
@@ -80,7 +81,7 @@ function csv_safe(mixed $value): string
 function party_for_user(int $partyId, array $user): ?array
 {
     $sql = 'SELECT p.*, u.name AS mr_name FROM parties p LEFT JOIN users u ON u.id = p.mr_id WHERE p.id = ?';
-    if ($user['role'] !== 'admin') {
+    if (!in_array($user['role'], ['owner', 'admin'], true)) {
         $sql .= ' AND p.mr_id = ' . (int) $user['id'] . ' AND p.active = 1';
     }
     $stmt = db()->prepare($sql);
