@@ -52,7 +52,7 @@ Employees register with their name, recovery email, mobile number, and password.
 3. For an existing database, run [sql/upgrade_password_resets.sql](sql/upgrade_password_resets.sql) once in phpMyAdmin.
 4. Existing users must sign in once and save a recovery email on their Password page. New users, MRs, and admins supply an email during account creation.
 
-The reset page does not reveal whether an email exists. Reset links are single-use, expire after 30 minutes, and requests are limited to one per account every 10 minutes.
+The reset page does not reveal whether an email exists. Reset links are single-use, expire after 30 minutes, and requests are limited to one per account every minute.
 
 ## Security notes
 

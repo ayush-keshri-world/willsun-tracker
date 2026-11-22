@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userQuery->execute([$email]);
         $account = $userQuery->fetch();
         if ($account) {
-            $recent = db()->prepare('SELECT id FROM password_resets WHERE user_id = ? AND created_at > (NOW() - INTERVAL 10 MINUTE) LIMIT 1');
+            $recent = db()->prepare('SELECT id FROM password_resets WHERE user_id = ? AND created_at > (NOW() - INTERVAL 1 MINUTE) LIMIT 1');
             $recent->execute([$account['id']]);
             if (!$recent->fetch()) {
                 $token = bin2hex(random_bytes(32));
