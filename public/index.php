@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/src/helpers.php';
 
 start_session();
 if (current_user()) {
-    redirect(current_user()['role'] === 'owner' ? 'owner/index.php' : (current_user()['role'] === 'admin' ? 'admin/index.php' : 'today.php'));
+    redirect(in_array(current_user()['role'], ['owner', 'admin'], true) ? 'admin/index.php' : 'today.php');
 }
 $error = '';
 $portalRole = $_GET['role'] ?? ($_POST['portal_role'] ?? '');
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         : in_array($user['role'], ['owner', 'admin'], true));
     if ($hasCorrectRole && password_verify($password, $user['password_hash'])) {
         login($user);
-        redirect($user['role'] === 'owner' ? 'owner/index.php' : ($user['role'] === 'admin' ? 'admin/index.php' : 'today.php'));
+        redirect(in_array($user['role'], ['owner', 'admin'], true) ? 'admin/index.php' : 'today.php');
     }
     $error = $portalRole === 'admin'
         ? 'This account does not have admin access, or the login details are incorrect.'
