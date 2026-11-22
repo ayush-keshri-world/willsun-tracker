@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+date_default_timezone_set('Asia/Kolkata');
+
 /** Creates one reusable PDO connection. */
 function db(): PDO
 {
@@ -24,6 +26,8 @@ function db(): PDO
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
+    // Store and query DATETIME values in Indian Standard Time for this application.
+    $pdo->exec("SET time_zone = '+05:30'");
 
     return $pdo;
 }
