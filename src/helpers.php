@@ -119,7 +119,7 @@ function page_start(string $title, ?array $user = null, string $active = ''): vo
 
 function page_end(?array $user = null, string $active = ''): void
 {
-    echo '</main></body></html>';
+    echo '<script>document.querySelectorAll("input[type=password]").forEach(function(input){if(input.dataset.eye)return;input.dataset.eye="1";var button=document.createElement("button");button.type="button";button.className="password-eye secondary";button.textContent="Show password";button.onclick=function(){var show=input.type==="password";input.type=show?"text":"password";button.textContent=show?"Hide password":"Show password";};input.insertAdjacentElement("afterend",button);});document.addEventListener("change",function(e){if(e.target.classList.contains("m")){var custom=e.target.closest(".card").querySelector(".custom");if(custom)custom.hidden=e.target.value==="default";}});</script></main></body></html>';
 }
 
 function visit_day_options(): array
