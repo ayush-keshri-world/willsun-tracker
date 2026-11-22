@@ -25,6 +25,49 @@ function redirect(string $path): never
     exit;
 }
 
+function app_config(): array
+{
+    static $config;
+    if ($config === null) {
+        $configFile = dirname(__DIR__) . '/config.php';
+        $config = is_file($configFile) ? require $configFile : [];
+    }
+    return $config;
+}
+
+function send_password_reset_email(string $email, string $name, string $token): bool
+{
+    $config = app_config();
+    $apiKey = (string) ($config['resend_api_key'] ?? '');
+    $appUrl = rtrim((string) ($config['app_url'] ?? ''), '/');
+    if ($apiKey === '' || $appUrl === '') {
+        error_log('Password reset email is not configured.');
+        return false;
+    }
+    $url = $appUrl . '/reset_password.php?token=' . rawurlencode($token);
+    $safeName = e($name);
+    $body = [
+        'from' => (string) ($config['email_from'] ?? 'Willsun ERP <no-reply@willsunpharma.com>'),
+        'to' => [$email],
+        'subject' => 'Reset your Willsun ERP password',
+        'html' => '<p>Hello ' . $safeName . ',</p><p>Use this link to reset your Willsun ERP password. It expires in 30 minutes.</p><p><a href="' . e($url) . '">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>',
+    ];
+    $context = stream_context_create(['http' => [
+        'method' => 'POST',
+        'header' => "Authorization: Bearer {$apiKey}\r\nContent-Type: application/json\r\n",
+        'content' => json_encode($body, JSON_THROW_ON_ERROR),
+        'timeout' => 12,
+        'ignore_errors' => true,
+    ]]);
+    $result = @file_get_contents('https://api.resend.com/emails', false, $context);
+    $status = $http_response_header[0] ?? '';
+    if ($result === false || !str_contains($status, ' 200 ') && !str_contains($status, ' 201 ')) {
+        error_log('Password reset email delivery failed. ' . $status);
+        return false;
+    }
+    return true;
+}
+
 function page_start(string $title, ?array $user = null, string $active = ''): void
 {
     $user ??= current_user();

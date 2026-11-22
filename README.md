@@ -36,7 +36,23 @@ A small, mobile-first PHP 8.1+ and MySQL app for pharmaceutical MRs to manage as
 
 Camera and GPS access normally require HTTPS on a real phone; localhost is suitable for testing standard pages and forms. Test at a 360px-wide mobile viewport.
 
-Employees can register with their name, mobile number, and password. New accounts have no parties until an administrator assigns them. Users can change their own password after logging in; forgotten-password requests are handled by an admin from the MRs page because Version 1 intentionally has no email or OTP verification.
+Employees register with their name, recovery email, mobile number, and password. New accounts have no parties until an administrator assigns them. Users can change their own password after logging in.
+
+## Self-service password reset (Resend)
+
+1. In Resend, verify the sending domain and create an API key.
+2. On the web host, add these values to the untracked `config.php` file (never commit the API key):
+
+   ```php
+   'resend_api_key' => 're_your_private_key',
+   'email_from' => 'Willsun ERP <no-reply@willsunpharma.com>',
+   'app_url' => 'https://erp.willsunpharma.com',
+   ```
+
+3. For an existing database, run [sql/upgrade_password_resets.sql](sql/upgrade_password_resets.sql) once in phpMyAdmin.
+4. Existing users must sign in once and save a recovery email on their Password page. New users, MRs, and admins supply an email during account creation.
+
+The reset page does not reveal whether an email exists. Reset links are single-use, expire after 30 minutes, and requests are limited to one per account every 10 minutes.
 
 ## Security notes
 
