@@ -103,7 +103,7 @@ function page_start(string $title, ?array $user = null, string $active = ''): vo
         if (in_array($user['role'], ['owner', 'admin'], true)) {
             $adminPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '' : 'admin/';
             $logoutPath = $adminPrefix === '' ? '../logout.php' : 'logout.php';
-            echo '<nav class="top-nav"><a href="' . $adminPrefix . 'index.php">Dashboard</a><a href="' . $adminPrefix . 'mrs.php">MRs</a><a href="' . $adminPrefix . 'parties.php">Parties</a>'
+            echo '<nav class="top-nav"><a href="' . $adminPrefix . 'index.php">Dashboard</a><a href="' . $adminPrefix . 'mrs.php">MRs</a><a href="' . $adminPrefix . 'products.php">Products</a><a href="' . $adminPrefix . 'parties.php">Parties</a>'
                 . '<a href="' . $adminPrefix . 'visits.php">Visits</a><a href="' . $adminPrefix . 'report.php">Reports</a>'
                 . '<a href="' . $logoutPath . '">Logout</a></nav>';
         }
