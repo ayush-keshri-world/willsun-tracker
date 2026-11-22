@@ -52,20 +52,42 @@ function send_password_reset_email(string $email, string $name, string $token): 
         'subject' => 'Reset your Willsun ERP password',
         'html' => '<p>Hello ' . $safeName . ',</p><p>Use this link to reset your Willsun ERP password. It expires in 30 minutes.</p><p><a href="' . e($url) . '">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>',
     ];
+    $payload = json_encode($body, JSON_THROW_ON_ERROR);
+    if (function_exists('curl_init')) {
+        $request = curl_init('https://api.resend.com/emails');
+        curl_setopt_array($request, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => ["Authorization: Bearer {$apiKey}", 'Content-Type: application/json'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 20,
+        ]);
+        $result = curl_exec($request);
+        $statusCode = (int) curl_getinfo($request, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($request);
+        curl_close($request);
+        if ($result !== false && in_array($statusCode, [200, 201], true)) {
+            return true;
+        }
+        error_log("Password reset email delivery failed. HTTP {$statusCode}. {$curlError}");
+        return false;
+    }
+
     $context = stream_context_create(['http' => [
         'method' => 'POST',
         'header' => "Authorization: Bearer {$apiKey}\r\nContent-Type: application/json\r\n",
-        'content' => json_encode($body, JSON_THROW_ON_ERROR),
-        'timeout' => 12,
+        'content' => $payload,
+        'timeout' => 20,
         'ignore_errors' => true,
     ]]);
     $result = @file_get_contents('https://api.resend.com/emails', false, $context);
     $status = $http_response_header[0] ?? '';
-    if ($result === false || !str_contains($status, ' 200 ') && !str_contains($status, ' 201 ')) {
-        error_log('Password reset email delivery failed. ' . $status);
-        return false;
+    if ($result !== false && (str_contains($status, ' 200 ') || str_contains($status, ' 201 '))) {
+        return true;
     }
-    return true;
+    error_log('Password reset email delivery failed. ' . $status);
+    return false;
 }
 
 function page_start(string $title, ?array $user = null, string $active = ''): void
