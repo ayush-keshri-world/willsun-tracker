@@ -15,3 +15,4 @@ textarea { min-height: 86px; resize: vertical; } button, .button { display: bloc
 .party-card { display: block; color: inherit; text-decoration: none; } .party-card span:not(.badge) { display: block; color: #58616b; margin-top: 4px; }
 table { width: 100%; border-collapse: collapse; } th, td { padding: 8px; text-align: left; border-bottom: 1px solid #d1d5db; } .small { font-size: .9rem; }
 .center-links { margin: 16px 0 0; text-align: center; } .success { color: #067647; font-weight: 700; }
+.role-choice { margin-top: 32px; } .role-choice .button { margin-top: 12px; } .login-role-label { margin: 0 0 16px; color: var(--blue); font-weight: 700; text-align: center; }
