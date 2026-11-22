@@ -3,6 +3,7 @@
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/src/helpers.php';
 $notice = '';
+$email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     $email = strtolower(trim($_POST['email'] ?? ''));
@@ -21,14 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    $notice = 'If that email address is registered, a password-reset link has been sent. Check spam as well.';
+    $notice = 'If that email address is registered, a password-reset link has been sent. Check spam as well. You can request another link after one minute.';
 }
 page_start('Forgot password', null);
 ?>
 <form method="post" class="card"><input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
 <p>Enter the email address registered to your account. We will send a one-time reset link.</p>
 <?php if ($notice): ?><p class="success"><?= e($notice) ?></p><?php endif; ?>
-<label>Email address<input name="email" type="email" maxlength="255" required></label>
-<button>Send reset link</button>
+<label>Email address<input name="email" type="email" maxlength="255" required value="<?= e($email) ?>"></label>
+<button><?= $notice ? 'Send another reset link' : 'Send reset link' ?></button>
 <p class="center-links"><a href="index.php">Back to login</a></p></form>
 <?php page_end(null); ?>
