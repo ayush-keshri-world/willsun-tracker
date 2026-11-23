@@ -94,7 +94,7 @@ function page_start(string $title, ?array $user = null, string $active = ''): vo
 {
     $user ??= current_user();
     $assetPrefix = str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '../' : '';
-    echo '<!doctype html><html lang="en"><head><meta charset="utf-8">';
+    echo '<!doctype html><html lang="en-IN"><head><meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<title>' . e($title) . '</title><link rel="stylesheet" href="' . $assetPrefix . 'assets/style.css">';
     echo '</head><body><main class="page"><header><h1>' . e($title) . '</h1>';
