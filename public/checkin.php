@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo = db(); $pdo->beginTransaction();
                 try {
                     if ($party['latitude'] === null || $party['longitude'] === null) { $pdo->prepare('UPDATE parties SET latitude=?, longitude=? WHERE id=? AND latitude IS NULL AND longitude IS NULL')->execute([$latitude, $longitude, $partyId]); }
-                    $stmt = $pdo->prepare('INSERT INTO visits (party_id,mr_id,latitude,longitude,distance_m,location_tag,status,remark,photo_path,photo_expires_at) VALUES (?,?,?,?,?,?,?,?,?,NULL)');
+                    $stmt = $pdo->prepare('INSERT INTO visits (party_id,mr_id,latitude,longitude,distance_m,location_tag,status,remark,photo_path,photo_expires_at) VALUES (?,?,?,?,?,?,?,?,?,DATE_ADD(NOW(), INTERVAL 30 DAY))');
                     $stmt->execute([$partyId, $user['id'], $latitude, $longitude, $distance, $tag, $status, $remark, $name]); $pdo->commit(); redirect('party.php?id=' . $partyId);
                 } catch (Throwable $exception) { $pdo->rollBack(); @unlink($photoPath); throw $exception; }
             }
